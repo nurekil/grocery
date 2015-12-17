@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+
+{% block title %} {{category.name}} Category | Yummy Groceries {% endblock %}
+
+
+{% block url_categories %} / {% endblock %}
+
+
+{% block url_brand %} / {% endblock %}
+
+
+{% load staticfiles %}
+
+
+{% block content %}
+
+<div class="jumbotron">
+  <h1>Welcome to the  <br> {{category.name}} Category!</h1>
+  <p>In our shop you can buy delicious and yummy stuff. <br>
+     Choose a category on the right side </p>
+</div>
+
+<div class="row">
+{% for item in items %}
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail" style="height:275px;">
+    <a href="/item/{{item.alias}}">
+      <img src="{{item.image}}" alt="..." style="max-height:165px;">
+    </a>    
+      <div class="caption">
+        <h3>{{item.name}}</h3>
+        <h4>
+          <span class="label label-success"> {{item.price}} uah</span> 
+          <span class="label label-warning"> {{item.available}}</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div><!--/row-->
+
+{% endblock %}

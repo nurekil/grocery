@@ -1,0 +1,99 @@
+
+{% extends 'base.html' %}
+
+
+{% block title %} {{item.name}} | Yummy Groceries {% endblock %}
+
+
+{% block url_categories %} / {% endblock %}
+
+
+{% block url_brand %} / {% endblock %}
+
+
+{% load staticfiles %}
+
+
+{% block content %}
+
+  <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="{% static 'jquery.cookie.js' %}"></script>
+
+  <script type="text/javascript">
+
+    $(function(){
+    var arr1 = $.cookie('cart');
+    if(!arr1){
+      arr1 = '[]';
+    }
+    var json2 = $.parseJSON(arr1);    
+    var summa1 = 0;
+    $.each(json2, function( index, value ) {
+      summa1 = summa1 + parseInt(value['price']) * parseInt(value['quantity']);
+    });
+
+    $('.badge').text(summa1);
+      
+      var quantity = 1;
+
+      $(".plus").click(function(){
+        quantity = quantity + 1;
+        $('input.btn.btn-primary').attr('value', quantity);
+      });
+
+      $(".minus").click(function(){
+        if(quantity>1){
+          quantity = quantity - 1;
+          $('input.btn.btn-primary').attr('value', quantity);  
+        }
+        
+      });
+
+      $(".buy").click(function(){
+          var arr = $.cookie('cart');
+          if(!arr){
+            arr = '[]';
+          }
+          var json = $.parseJSON(arr);
+          json.push({
+            'name':$('h3.name').text(),
+            'image':$('img').attr('src'),
+            'price':$('span.price').text(),
+            'quantity':$('input').attr('value'),
+            'alias': $('h3.alias').text(),
+          });
+          $.cookie('cart', JSON.stringify(json), {path: '/'});
+          var summa = 0;
+          $.each(json, function( index, value ) {
+            summa = summa + parseInt(value['price']) * parseInt(value['quantity']);
+          });
+          $('.badge').text(summa);
+          $('.quantity').text(quantity);
+      });
+      
+    });
+  </script>
+
+
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail" style="height:425px; width: 500px; margin: 0 auto;">
+    <a href="#">
+      <img src="{{item.image}}" alt="..." style="max-height:280px; ">
+    </a>    
+      <div class="caption">
+        <h3 class="name">{{item.name}}</h3>
+        <h3 class="alias" style="display: none;">{{item.alias}}</h3>
+        <h4>
+          <span class="price"><span class="label label-success"> {{item.price}} uah</span></span>
+          <span class="alailable"><span class="label label-warning"> {{item.available}}</span></span>
+        </h4> 
+          <span class="minus"><a class="btn btn-primary" role="button"><span class="glyphicon glyphicon-minus"></span></a></span>
+          <input type="text" value="1" class="btn btn-primary" style="width:50px; background-color: white; color: black;" disabled>
+          <span class="plus"><a class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span></a></span>            
+          <span class="buy"><a href="/{{item.category.alias}}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-shopping-cart"></span> Buy</a></span>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

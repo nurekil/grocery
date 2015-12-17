@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Yummy Groceries | Cart {% endblock %}
+
+
+{% block cart_activity %} active {% endblock %}
+
+
+{% block url_categories %} / {% endblock %}
+
+
+{% block url_brand %} / {% endblock %}
+
+
+{% load staticfiles %}
+
+
+{% block content %}
+
+<style type="text/css">
+  img{
+    height: 120px;
+  }
+  td.image{
+    width: 200px; 
+    text-align: center;
+  }
+</style>
+
+  <table class="table">
+    <th>
+      Item
+    </th>
+    <th>
+      Quantity
+    </th>
+    <th>
+      Item price
+    </th>
+    <th>
+      Subtotal
+    </th>
+  </table>
+
+  <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="{% static 'jquery.cookie.js' %}"></script>
+
+<script type="text/javascript">
+
+  $(function(){
+  var arr1 = $.cookie('cart');
+  if(!arr1){
+    arr1 = '[]';
+  }
+  var json2 = $.parseJSON(arr1);    
+  var total = 0;
+  var subtotal = 0;
+  $.each(json2, function( index, value ) {
+    index_int = parseInt(index) + 1;
+    subtotal = parseInt(value['price']) * parseInt(value['quantity']) + ' uah';
+    $('.table').append('<tr><td class="image"><a href="/item/'+value['alias']+'"><img src="'+value['image']+'"></a><h4 class="name">'+value['name']+'</h4></td><td>'+value['quantity']+'</td><td>'+value['price']+'</td><td>'+subtotal+'</td></tr>');
+    total = total + parseInt(subtotal);
+  });
+    $('.table').append('<tr><td class="image"></td><td></td><td>Total</td><td>'+total.toString() + ' uah'+'</td></tr>'); 
+  });
+
+  </script>
+
+
+{% endblock %}
