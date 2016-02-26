@@ -5,7 +5,7 @@ sys.setdefaultencoding('utf-8')
 
 from django.contrib import admin
 from django.shortcuts import render, redirect
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from main.models import Category, Item
 
 
@@ -51,3 +51,6 @@ def category_items(request, alias):
 
     return render(request, 'items.html', context)
 
+def order(request):
+
+    return render_to_response('index', [])

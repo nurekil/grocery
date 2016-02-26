@@ -22,17 +22,6 @@
   <script type="text/javascript">
 
     $(function(){
-    var arr1 = $.cookie('cart');
-    if(!arr1){
-      arr1 = '[]';
-    }
-    var json2 = $.parseJSON(arr1);    
-    var summa1 = 0;
-    $.each(json2, function( index, value ) {
-      summa1 = summa1 + parseInt(value['price']) * parseInt(value['quantity']);
-    });
-
-    $('.badge').text(summa1);
       
       var quantity = 1;
 
@@ -46,14 +35,12 @@
           quantity = quantity - 1;
           $('input.btn.btn-primary').attr('value', quantity);  
         }
-        
       });
 
       $(".buy").click(function(){
-          var arr = $.cookie('cart');
-          if(!arr){
-            arr = '[]';
-          }
+        var arr = $.cookie('cart');
+        if(!arr){
+          arr = '[]';
           var json = $.parseJSON(arr);
           json.push({
             'name':$('h3.name').text(),
@@ -63,14 +50,41 @@
             'alias': $('h3.alias').text(),
           });
           $.cookie('cart', JSON.stringify(json), {path: '/'});
-          var summa = 0;
-          $.each(json, function( index, value ) {
-            summa = summa + parseInt(value['price']) * parseInt(value['quantity']);
+          console.log($.cookie('cart')); 
+
+        } else {
+
+          var objected = JSON.parse($.cookie('cart'));
+          var repeat_flag = false;
+          $.each(objected, function(index) {
+            console.log("in")
+            if ( objected[index].name == $('h3.name').text() ) {
+              quantity = parseInt(objected[index].quantity);
+              addind_qua = parseInt($('input').attr('value'));
+              objected[index].quantity = String(quantity + addind_qua);
+              console.log(quantity + addind_qua);
+              repeat_flag = true;
+            }
           });
-          $('.badge').text(summa);
-          $('.quantity').text(quantity);
+          $.cookie('cart', JSON.stringify(objected), {path: '/'});
+          console.log($.cookie('cart'));
+          
+          if (repeat_flag !== true) {
+            var json = $.parseJSON($.cookie('cart'));
+            json.push({
+              'name':$('h3.name').text(),
+              'image':$('img').attr('src'),
+              'price':$('span.price').text(),
+              'quantity':$('input').attr('value'),
+              'alias': $('h3.alias').text(),
+            });
+            $.cookie('cart', JSON.stringify(json), {path: '/'});
+            console.log($.cookie('cart'));
+          }
+
+        }
       });
-      
+  
     });
   </script>
 
@@ -89,8 +103,8 @@
         </h4> 
           <span class="minus"><a class="btn btn-primary" role="button"><span class="glyphicon glyphicon-minus"></span></a></span>
           <input type="text" value="1" class="btn btn-primary" style="width:50px; background-color: white; color: black;" disabled>
-          <span class="plus"><a class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span></a></span>            
-          <span class="buy"><a href="/{{item.category.alias}}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-shopping-cart"></span> Buy</a></span>
+          <span class="plus"><a class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span></a></span>     
+          <span class="buy"><a href="{{ request.META.HTTP_REFERER }}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-shopping-cart"></span> Buy</a></span>
       </div>
     </div>
   </div>

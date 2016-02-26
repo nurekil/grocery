@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^cart', views.cart, name='cart'),
     url(r'^item/(?P<alias>[^/]+)', views.item_about, name='item_about'),
     url(r'^(?P<alias>[^/]+)', views.category_items, name='items'),
+    url(r'^order', views.order),
 ]
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns

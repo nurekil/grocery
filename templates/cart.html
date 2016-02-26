@@ -41,7 +41,11 @@
     <th>
       Subtotal
     </th>
+    <th>
+      Remove
+    </th>
   </table>
+
 
   <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="{% static 'jquery.cookie.js' %}"></script>
@@ -49,23 +53,68 @@
 <script type="text/javascript">
 
   $(function(){
-  var arr1 = $.cookie('cart');
-  if(!arr1){
-    arr1 = '[]';
-  }
-  var json2 = $.parseJSON(arr1);    
+
+  var arr = $.cookie('cart');
+
+  if(!arr){
+    arr = '[]';
+    $(".send").css("display", "none");
+  } else {
+
+  var json = $.parseJSON(arr);
   var total = 0;
   var subtotal = 0;
-  $.each(json2, function( index, value ) {
+  $.each(json, function( index, value ) {
     index_int = parseInt(index) + 1;
     subtotal = parseInt(value['price']) * parseInt(value['quantity']) + ' uah';
-    $('.table').append('<tr><td class="image"><a href="/item/'+value['alias']+'"><img src="'+value['image']+'"></a><h4 class="name">'+value['name']+'</h4></td><td>'+value['quantity']+'</td><td>'+value['price']+'</td><td>'+subtotal+'</td></tr>');
+    $('.table').append('<tr><td class="id" style="display: none;">'+index+'</td><td class="image"><a href="/item/'+value['alias']+'"><img src="'+value['image']+'"></a><h4 class="name">'+value['name']+'</h4></td><td>'+value['quantity']+'</td><td>'+value['price']+'</td><td>'+subtotal+'</td><td> <span class="remove"><a class="btn btn-danger" role="button"><span class="glyphicon glyphicon-remove"></span></a></span> </td></tr>');
     total = total + parseInt(subtotal);
   });
-    $('.table').append('<tr><td class="image"></td><td></td><td>Total</td><td>'+total.toString() + ' uah'+'</td></tr>'); 
+    $('.table').append('<tr><td class="image"></td><td></td><td>Total</td><td class="total">'+total.toString() + ' uah'+'</td><td> <span class="send"><a class="btn btn-success" href="/order"role="button"><span></span> Send order</a></span> </td></tr>'); 
+  }
+
+  if(parseInt($(".total").text()) == 0) {
+      $(".send").css("display", "none");
+    }
+
+  $(".remove").on("click", function(){
+      var parent = $(this).parents().get(1);
+      obj = parseInt($(this).closest('tr').find('.id').text());
+      var arr_new = $.cookie('cart');
+
+      if(!arr_new){
+        arr_new = '[]';
+      }
+      
+      var json_new = $.parseJSON(arr_new);
+      var total_new = parseInt($(".total").text());
+      
+      $.each(json_new, function(index, value){
+        if (index==obj){
+          total_new = total_new - parseInt(value['price'])*parseInt(value['quantity']);
+          json_new.splice(index, 1);
+        }
+      });
+
+      $.cookie('cart', JSON.stringify(json_new), {path: '/'});
+      $(".total").text(total_new.toString() + ' uah');
+      parent.remove();
+
+      if(parseInt($(".total").text()) == 0) {
+          $(".send").css("display", "none");
+        }
+ 
+      $.each($('.id'), function( index, value ) {
+        $(this).text(index);
+      });
   });
+
+  });
+
 
   </script>
 
 
 {% endblock %}
+
+

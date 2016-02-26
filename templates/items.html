@@ -26,13 +26,14 @@
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail" style="height:275px;">
     <a href="/item/{{item.alias}}">
-      <img src="{{item.image}}" alt="..." style="max-height:165px;">
+      <img src="{{item.image}}" alt="..." title="Click on image to buy" style="max-height:165px;">
     </a>    
       <div class="caption">
-        <h3>{{item.name}}</h3>
+        <h3><a href="/item/{{item.alias}}">{{item.name}}</a></h3>
         <h4>
           <span class="label label-success"> {{item.price}} uah</span> 
           <span class="label label-warning"> {{item.available}}</span>
+          <!--<span class="buy"><a href="/item/{{item.alias}}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-shopping-cart"></span> View</a></span>-->
         </h4>
       </div>
     </div>
